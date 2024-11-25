@@ -14,6 +14,6 @@ class Resource(Base):
     unit = Column(String(128))
 
     menu_items_recipes = relationship(
-        "MenuItemRecipe", secondary="menu_items_recipes_resources", back_populates="resources"
+        "Recipes", secondary="menu_items_recipes_resources", back_populates="resources"
     )
 

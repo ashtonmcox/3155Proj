@@ -10,7 +10,7 @@ class Feedback(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     content = Column(String(512), nullable=False)
-    order_details_orders_id = Column(Integer, ForeignKey("order.id"))
+    order_details_orders_id = Column(Integer, ForeignKey("orders.id"))
     score = Column(Integer, CheckConstraint("score BETWEEN 1 AND 5"))
 
     user = relationship("User")
