@@ -8,7 +8,12 @@ class Resource(Base):
     __tablename__ = "resources"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    item = Column(String(100), unique=True, nullable=False)
-    amount = Column(Integer, index=True, nullable=False, server_default='0.0')
+    name = Column(String(512), nullable=False)
+    type = Column(String(512), nullable=False)
+    amount = Column(DECIMAL(10, 2), nullable=False)
+    unit = Column(String(128), nullable=False)
 
-    recipes = relationship("Recipe", back_populates="resource")
+    menu_items_recipes = relationship(
+        "Recipes", secondary="menu_items_recipes_resources", back_populates="resources"
+    )
+

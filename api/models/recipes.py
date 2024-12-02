@@ -1,16 +1,29 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DECIMAL, DATETIME
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..dependencies.database import Base
 
 
-class Recipe(Base):
+class MenuItemRecipe(Base):
     __tablename__ = "recipes"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    sandwich_id = Column(Integer, ForeignKey("sandwiches.id"))
-    resource_id = Column(Integer, ForeignKey("resources.id"))
-    amount = Column(Integer, index=True, nullable=False, server_default='0.0')
+    name = Column(String(512), nullable=False)
+    price = Column(Integer, nullable=False)
+    category = Column(String(512), nullable=True)
+    description = Column(String(512), nullable=True)
+    resource = Column(String(512), nullable=False)
+    instructions = Column(String(512), nullable=False)
+    preparation_time = Column(Integer, nullable=True)
+    servings = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    calories = Column(Integer, nullable=True)
 
-    sandwich = relationship("Sandwich", back_populates="recipes")
-    resource = relationship("Resource", back_populates="recipes")
+    
+    resources = relationship(
+        "Resource", secondary="menu_items_recipes_resources", back_populates="recipes"
+    )
+
+    order_details = relationship(
+        "Orders", back_populates="recipes"
+    )
