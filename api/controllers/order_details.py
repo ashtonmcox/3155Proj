@@ -1,14 +1,14 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response, Depends
-from ..models import users as model
+from ..models import order_details as model
 from sqlalchemy.exc import SQLAlchemyError
 
 
 def create(db: Session, request):
     new_item = model.OrderDetail(
         order_id=request.order_id,
-        sandwich_id=request.sandwich_id,
-        amount=request.amount
+        menu_item_id=request.menu_item_id,
+        quantity=request.quantity
     )
 
     try:
@@ -31,22 +31,22 @@ def read_all(db: Session):
     return result
 
 
-def read_one(db: Session, item_id):
+def read_one(db: Session, item_id: int):
     try:
         item = db.query(model.OrderDetail).filter(model.OrderDetail.id == item_id).first()
         if not item:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Id not found!")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order detail not found!")
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return item
 
 
-def update(db: Session, item_id, request):
+def update(db: Session, item_id: int, request):
     try:
         item = db.query(model.OrderDetail).filter(model.OrderDetail.id == item_id)
         if not item.first():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Id not found!")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order detail not found!")
         update_data = request.dict(exclude_unset=True)
         item.update(update_data, synchronize_session=False)
         db.commit()
@@ -56,11 +56,11 @@ def update(db: Session, item_id, request):
     return item.first()
 
 
-def delete(db: Session, item_id):
+def delete(db: Session, item_id: int):
     try:
         item = db.query(model.OrderDetail).filter(model.OrderDetail.id == item_id)
         if not item.first():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Id not found!")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order detail not found!")
         item.delete(synchronize_session=False)
         db.commit()
     except SQLAlchemyError as e:
