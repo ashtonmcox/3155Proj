@@ -17,14 +17,14 @@ def create(request: schema.FeedbackCreate, db: Session = Depends(get_db)):
 def read_all(db: Session = Depends(get_db)):
     return controller.read_all(db)
 
-@router.get("/{item_id}", response_model=schema.Feedback)
-def read_one(item_id: int, db: Session = Depends(get_db)):
-    return controller.read_one(db, item_id=item_id)
+@router.get("/{feedback_id}", response_model=schema.Feedback)
+def read_one(feedback_id: int, db: Session = Depends(get_db)):
+    return controller.read_one(db, feedback_id=feedback_id)
 
-@router.put("/{item_id}", response_model=schema.Feedback)
-def update(item_id: int, request: schema.FeedbackUpdate, db: Session = Depends(get_db)):
-    return controller.update(db=db, request=request, item_id=item_id)
+@router.put("/{feedback_id}", response_model=schema.Feedback)
+def update(feedback_id: int, request: schema.FeedbackUpdate, db: Session = Depends(get_db)):
+    return controller.update(db=db, request=request, feedback_id=feedback_id)
 
-@router.delete("/{item_id}")
-def delete(item_id: int, db: Session = Depends(get_db)):
-    return controller.delete(db=db, item_id=item_id)
+@router.delete("/{feedback_id}")
+def delete(feedback_id: int, db: Session = Depends(get_db)):
+    return controller.delete(db=db, feedback_id=feedback_id)
