@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response, Depends
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
 from ..models import orders as model
 from datetime import date
 
@@ -83,3 +84,18 @@ def read_by_date_range(db: Session, start_date: date, end_date: date):
         error = str(e.__dict__.get("orig", "An error occurred"))
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return orders
+
+
+def get_revenue_by_date(db: Session, target_date: date):
+    try:
+        total_revenue = db.query(func.sum(model.Order.total_price)) \
+            .filter(func.date(model.Order.date) == target_date).scalar()
+
+        if total_revenue is None:
+            raise HTTPException(status_code=404, detail="No orders found for this date")
+
+        total_revenue = round(total_revenue, 2)
+
+        return {"total_revenue": total_revenue}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

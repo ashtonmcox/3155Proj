@@ -45,3 +45,13 @@ class DateRange(BaseModel):
 def read_by_date_range(date_range: DateRange, db: Session = Depends(get_db)):
     return controller.read_by_date_range(db=db, start_date=date_range.start_date, end_date=date_range.end_date)
 
+from pydantic import BaseModel
+from datetime import date
+
+class DateInput(BaseModel):
+    date: date
+
+@router.post("/revenue", response_model=dict)
+def get_revenue(request: DateInput, db: Session = Depends(get_db)):
+    return controller.get_revenue_by_date(db=db, target_date=request.date)
+
