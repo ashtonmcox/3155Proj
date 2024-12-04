@@ -12,5 +12,7 @@ class Payment(Base):
     card_information = Column(String(512), nullable=False)
     transaction_status = Column(String(512), nullable=False)
     payment_type = Column(String(512), nullable=False)
+    promotion_code = Column(String(512), ForeignKey("promotions.promotion_code"), nullable=True)
 
     order = relationship("Order")
+    promotion = relationship("Promotion")
