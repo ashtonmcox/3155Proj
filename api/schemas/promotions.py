@@ -4,11 +4,10 @@ from datetime import date
 
 
 class PromotionBase(BaseModel):
-    code: str
+    promotion_code: str
     description: Optional[str] = None
     expiration_date: date
-    discount_value: Optional[float] = None  
-    discount_percentage: Optional[float] = None  
+    discount_percent: Optional[float] = None  
 
 
 class PromotionCreate(PromotionBase):
@@ -16,11 +15,10 @@ class PromotionCreate(PromotionBase):
 
 
 class PromotionUpdate(BaseModel):
-    code: Optional[str] = None
+    promotion_code: Optional[str] = None
     description: Optional[str] = None
     expiration_date: Optional[date] = None
-    discount_value: Optional[float] = None
-    discount_percentage: Optional[float] = None
+    discount_percent: Optional[float] = None
 
 
 class Promotion(PromotionBase):

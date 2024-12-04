@@ -6,11 +6,10 @@ from ..models import promotions as model
 
 def create(db: Session, request):
     new_promotion = model.Promotion(
-        code=request.code,
+        promotion_code=request.promotion_code,
         description=request.description,
         expiration_date=request.expiration_date,
-        discount_value=request.discount_value,
-        discount_percentage=request.discount_percentage,
+        discount_percent=request.discount_percent
     )
 
     try:

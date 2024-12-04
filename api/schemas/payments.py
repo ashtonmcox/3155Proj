@@ -7,6 +7,7 @@ class PaymentBase(BaseModel):
     card_information: str
     transaction_status: str
     payment_type: str
+    promotion_code: Optional[str] = None
 
 
 class PaymentCreate(PaymentBase):
@@ -18,6 +19,7 @@ class PaymentUpdate(BaseModel):
     card_information: Optional[str] = None
     transaction_status: Optional[str] = None
     payment_type: Optional[str] = None
+    promotion_code: Optional[str] = None
 
 
 class Payment(PaymentBase):
