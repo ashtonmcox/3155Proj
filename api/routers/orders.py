@@ -3,6 +3,9 @@ from sqlalchemy.orm import Session
 from ..controllers import orders as controller
 from ..schemas import orders as schema
 from ..dependencies.database import engine, get_db
+from datetime import date
+from pydantic import BaseModel
+
 
 router = APIRouter(
     tags=['Orders'],
@@ -33,3 +36,12 @@ def update(order_id: int, request: schema.OrderUpdate, db: Session = Depends(get
 @router.delete("/{order_id}")
 def delete(order_id: int, db: Session = Depends(get_db)):
     return controller.delete(db=db, order_id=order_id)
+
+class DateRange(BaseModel):
+    start_date: date
+    end_date: date
+
+@router.post("/date-range", response_model=list[schema.Order])
+def read_by_date_range(date_range: DateRange, db: Session = Depends(get_db)):
+    return controller.read_by_date_range(db=db, start_date=date_range.start_date, end_date=date_range.end_date)
+

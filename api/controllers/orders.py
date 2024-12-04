@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response, Depends
 from sqlalchemy.exc import SQLAlchemyError
 from ..models import orders as model
+from datetime import date
 
 
 def create(db: Session, request):
@@ -69,3 +70,16 @@ def delete(db: Session, order_id: int):
         error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+def read_by_date_range(db: Session, start_date: date, end_date: date):
+    try:
+        orders = db.query(model.Order).filter(
+            model.Order.date >= start_date,
+            model.Order.date <= end_date
+        ).all()
+        if not orders:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No orders found within the specified date range.")
+    except SQLAlchemyError as e:
+        error = str(e.__dict__.get("orig", "An error occurred"))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+    return orders
