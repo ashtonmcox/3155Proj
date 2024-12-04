@@ -14,7 +14,8 @@ class Order(Base):
    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)  
    status = Column(String(512), nullable=False)
    date = Column(DateTime, default=datetime.utcnow)
-   tracking_number = Column(String(128), nullable=False)
+   tracking_number = Column(Integer, nullable=False)
+   order_type = Column(String(10), nullable=False)
    total_price = Column(Float, nullable=False)
 
 

@@ -8,7 +8,8 @@ from pydantic import BaseModel, Field
 class OrderBase(BaseModel):
    user_id: int
    status: str
-   tracking_number: str
+   tracking_number: int
+   order_type: str
    total_price: float
    date: datetime 
 
@@ -22,7 +23,8 @@ class OrderCreate(OrderBase):
 class OrderUpdate(BaseModel):
    user_id: Optional[int] = Field(default=None)
    status: Optional[str] = None
-   tracking_number: Optional[str] = None
+   tracking_number: Optional[int] = None
+   order_type: Optional[str] = None
    total_price: Optional[float] = None
    date: Optional[datetime] = None
 

@@ -9,6 +9,7 @@ def create(db: Session, request):
         user_id=request.user_id,
         status=request.status,
         tracking_number=request.tracking_number,
+        order_type=request.order_type,
         total_price=request.total_price,
         date=request.date
     )
@@ -69,3 +70,12 @@ def delete(db: Session, order_id: int):
         error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+def read_one_by_tracking_number(db: Session, tracking_number: str):
+    
+    order = db.query(model.Order).filter(model.Order.tracking_number == tracking_number).first()
+
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    return order
