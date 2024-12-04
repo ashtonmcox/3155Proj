@@ -23,6 +23,10 @@ def read_all(db: Session = Depends(get_db)):
     return controller.read_all(db)
 
 
+@router.get("/{tracking_number}", response_model=schema.Order)
+def read_one_by_tracking_number(tracking_number: str, db: Session = Depends(get_db)):
+    return controller.read_one_by_tracking_number(db, tracking_number=tracking_number)
+
 @router.get("/{order_id}", response_model=schema.Order)
 def read_one(order_id: int, db: Session = Depends(get_db)):
     return controller.read_one(db, order_id=order_id)
