@@ -14,4 +14,5 @@ class User(Base):
     phone_number = Column(String(20), nullable=False, unique=True)
     address = Column(String(512), nullable=False)
 
-    orders = relationship("OrderDetailOrder", back_populates="user")
+    orders = relationship("Order", back_populates="users")
+    feedback = relationship("Feedback", back_populates="users")

@@ -5,14 +5,14 @@ from pydantic import BaseModel
 
 class MenuItemRecipeBase(BaseModel):
     name: str
-    price: int
+    price: float
     category: str
     description: str
     resource: str
     instructions: str
     preparation_time: str
-    servings: str
-    calories: str
+    servings: int
+    calories: int
 
 
 class MenuItemRecipeCreate(MenuItemRecipeBase):
@@ -21,12 +21,12 @@ class MenuItemRecipeCreate(MenuItemRecipeBase):
 
 class MenuItemRecipeUpdate(BaseModel):
     name: Optional[str] = None
-    price: Optional[int] = None
+    price: Optional[float] = None
     category: Optional[str] = None
     description: Optional[str] = None
     resource: Optional[str] = None
     instructions: Optional[str] = None
-    preparation_time: Optional[int] = None
+    preparation_time: Optional[str] = None
     servings: Optional[int] = None
     calories: Optional[int] = None
 

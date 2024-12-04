@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..dependencies.database import Base
@@ -9,12 +9,12 @@ class MenuItemRecipe(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(512), nullable=False)
-    price = Column(Integer, nullable=False)
+    price = Column(Float, nullable=False)
     category = Column(String(512), nullable=True)
     description = Column(String(512), nullable=True)
     resource = Column(String(512), nullable=False)
     instructions = Column(String(512), nullable=False)
-    preparation_time = Column(Integer, nullable=True)
+    preparation_time = Column(String(512), nullable=True)
     servings = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     calories = Column(Integer, nullable=True)
@@ -25,5 +25,5 @@ class MenuItemRecipe(Base):
     )
 
     order_details = relationship(
-        "Orders", back_populates="recipes"
+        "OrderDetail", back_populates="recipes"
     )

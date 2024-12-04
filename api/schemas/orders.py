@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 
@@ -20,7 +20,7 @@ class OrderCreate(OrderBase):
 
 
 class OrderUpdate(BaseModel):
-   user_id: Optional[int] = None
+   user_id: Optional[int] = Field(default=None)
    status: Optional[str] = None
    tracking_number: Optional[str] = None
    total_price: Optional[float] = None

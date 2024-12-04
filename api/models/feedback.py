@@ -13,5 +13,5 @@ class Feedback(Base):
     order_details_orders_id = Column(Integer, ForeignKey("orders.id"))
     score = Column(Integer, CheckConstraint("score BETWEEN 1 AND 5"))
 
-    user = relationship("User")
-    order = relationship("Order")
+    users = relationship("User", back_populates="feedback")
+    orders = relationship("Order", back_populates="feedback")

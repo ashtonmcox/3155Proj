@@ -13,7 +13,7 @@ class Resource(Base):
     amount = Column(DECIMAL(10, 2), nullable=False)
     unit = Column(String(128), nullable=False)
 
-    menu_items_recipes = relationship(
-        "Recipes", secondary="menu_items_recipes_resources", back_populates="resources"
+    recipes = relationship(
+        "MenuItemRecipe", secondary="menu_items_recipes_resources", back_populates="resources"
     )
 

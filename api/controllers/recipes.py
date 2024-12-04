@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response
 from sqlalchemy.exc import SQLAlchemyError
-from ..models import menu_item_recipes as model
+from ..models import recipes as model
 
 
 def create(db: Session, request):
