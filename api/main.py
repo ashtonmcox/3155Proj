@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import index as indexRoute
 from .models import model_loader
 from .dependencies.config import conf
+from fastapi import FastAPI
+from .routers import menu_item_popularity
 
 
 app = FastAPI()
@@ -20,6 +22,7 @@ app.add_middleware(
 
 model_loader.index()
 indexRoute.load_routes(app)
+app.include_router(menu_item_popularity.router)
 
 
 if __name__ == "__main__":
