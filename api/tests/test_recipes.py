@@ -20,7 +20,7 @@ def test_create_recipe(db_session):
         "description": "Classic Italian pasta dish",
         "resource": "Pasta, eggs, cheese, pancetta",
         "instructions": "Cook pasta, mix with sauce, serve",
-        "preparation_time": 30,
+        "preparation_time": "30 min",
         "servings": 4,
         "calories": 400
     }
@@ -43,35 +43,44 @@ def test_create_recipe(db_session):
 
 def test_update_recipe(db_session):
     update_data = {
-        "description": "Updated classic Italian pasta",  
+        "description": "Updated classic Italian pasta",
         "calories": 450
     }
 
+    # Mock existing recipe object
     existing_recipe = model.MenuItemRecipe(
         id=1,
         name="Spaghetti Carbonara",
         price=12,
         category="Pasta",
         dietary_category="Vegan",
-        description="Classic Italian pasta dish", 
+        description="Classic Italian pasta dish",
         resource="Pasta, eggs, cheese, pancetta",
         instructions="Cook pasta, mix with sauce, serve",
-        preparation_time=30,
+        preparation_time="30 min",
         servings=4,
-        calories=400  
+        calories=400
     )
 
+    # Mock query and update behavior
     db_session.query.return_value.filter.return_value.first.return_value = existing_recipe
-    
-    db_session.query.return_value.filter.return_value.update.return_value = 1  
 
+    def mock_update(data, synchronize_session):
+        for key, value in data.items():
+            setattr(existing_recipe, key, value)
+
+    db_session.query.return_value.filter.return_value.update.side_effect = mock_update
+
+    # Simulate refresh behavior
+    db_session.refresh.side_effect = lambda obj: None  # No-op, as the object is already updated
+
+    # Call the controller update function
     updated_recipe = controller.update(db_session, item_id=1, request=MenuItemRecipeUpdate(**update_data))
 
+    # Assertions
     assert updated_recipe is not None
-    assert updated_recipe.description == update_data["description"]  
-    assert updated_recipe.calories == update_data["calories"] 
-
-
+    assert updated_recipe.description == update_data["description"]
+    assert updated_recipe.calories == update_data["calories"]
 
 def test_get_recipe(db_session):
     existing_recipe = model.MenuItemRecipe(
@@ -83,7 +92,7 @@ def test_get_recipe(db_session):
         description="Classic Italian pasta dish",
         resource="Pasta, eggs, cheese, pancetta",
         instructions="Cook pasta, mix with sauce, serve",
-        preparation_time=30,
+        preparation_time= "30 min",
         servings=4,
         calories=400
     )
