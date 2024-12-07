@@ -47,15 +47,23 @@ def read_one(db: Session, payment_id: int):
 def update(db: Session, payment_id: int, request):
     try:
         payment = db.query(model.Payment).filter(model.Payment.id == payment_id)
-        if not payment.first():
+        
+        existing_payment = payment.first()
+        if not existing_payment:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found!")
+        
         update_data = request.dict(exclude_unset=True)
-        payment.update(update_data, synchronize_session=False)
+        
+        for key, value in update_data.items():
+            setattr(existing_payment, key, value)
+        
         db.commit()
+        
+        db.refresh(existing_payment)
+        return existing_payment
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
-    return payment.first()
 
 
 def delete(db: Session, payment_id: int):

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, NoResultFound
 from ..models import feedback as model
 
 
@@ -23,6 +23,15 @@ def create(db: Session, request):
     return new_feedback
 
 
+def get(db: Session, feedback_id: int):
+    try:
+        feedback = db.query(model.Feedback).filter(model.Feedback.id == feedback_id).first()
+        if not feedback:
+            raise NoResultFound(f"Feedback with ID {feedback_id} not found")
+    except NoResultFound as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    return feedback
+
 def read_all(db: Session):
     try:
         result = db.query(model.Feedback).all()
@@ -42,19 +51,21 @@ def read_one(db: Session, feedback_id: int):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return feedback
 
-
-def update(db: Session, feedback_id: int, request):
+def update(db: Session, feedback_id: int, update_data: dict):
     try:
-        feedback = db.query(model.Feedback).filter(model.Feedback.id == feedback_id)
-        if not feedback.first():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Feedback not found!")
-        update_data = request.dict(exclude_unset=True)
-        feedback.update(update_data, synchronize_session=False)
+        feedback = db.query(model.Feedback).filter(model.Feedback.id == feedback_id).first()
+        if not feedback:
+            raise HTTPException(status_code=404, detail="Feedback not found")
+
+        for key, value in update_data.items():
+            setattr(feedback, key, value)
+
         db.commit()
+        db.refresh(feedback)
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
-    return feedback.first()
+        error = str(e.__dict__["orig"])
+        raise HTTPException(status_code=400, detail=error)
+    return feedback
 
 
 def delete(db: Session, feedback_id: int):
@@ -65,6 +76,6 @@ def delete(db: Session, feedback_id: int):
         feedback.delete(synchronize_session=False)
         db.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
+        error = str(e.__dict__["orig"])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return True

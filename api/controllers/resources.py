@@ -43,7 +43,18 @@ def read_one(db: Session, resource_id: int):
     return item
 
 
-def update(db: Session, resource_id: int, request):
+def update(db: Session, resource_id: int, update_data: dict):
+    resource = db.query(model.Resource).filter(model.Resource.id == resource_id).first()
+    if not resource:
+        raise HTTPException(status_code=404, detail="Resource not found")
+    
+    for field, value in update_data.items():
+        setattr(resource, field, value)
+    
+    db.commit()
+    db.refresh(resource)
+    return resource
+
     try:
         item = db.query(model.Resource).filter(model.Resource.id == resource_id)
         if not item.first():
@@ -55,6 +66,7 @@ def update(db: Session, resource_id: int, request):
         error = str(e.__dict__.get("orig", "An error occurred"))
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return item.first()
+
 
 
 def delete(db: Session, resource_id: int):

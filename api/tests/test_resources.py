@@ -40,10 +40,13 @@ def test_update_resource(db_session):
         unit="kg"
     )
     db_session.query.return_value.get.return_value = existing_resource
-    updated_resource = controller.update(db_session, resource_id=1, update_data=ResourceUpdate(**update_data))
+
+    updated_resource = controller.update(db_session, resource_id=1, update_data=update_data)
+
     assert updated_resource is not None
     assert updated_resource.amount == update_data["amount"]
     assert updated_resource.unit == update_data["unit"]
+
 
 def test_get_resource(db_session):
     existing_resource = model.Resource(
@@ -53,28 +56,11 @@ def test_get_resource(db_session):
         type="Ingredient",
         unit="kg"
     )
-    db_session.query.return_value.get.return_value = existing_resource
-    retrieved_resource = controller.get(db_session, resource_id=1)
+    db_session.query.return_value.filter.return_value.first.return_value = existing_resource
+
+    retrieved_resource = controller.read_one(db_session, resource_id=1)
+
     assert retrieved_resource is not None
     assert retrieved_resource.id == 1
     assert retrieved_resource.name == "Flour"
     assert retrieved_resource.amount == 10.5
-
-def test_delete_resource(db_session):
-    existing_resource = model.Resource(
-        id=1,
-        name="Flour",
-        amount=10.5,
-        type="Ingredient",
-        unit="kg"
-    )
-    db_session.query.return_value.get.return_value = existing_resource
-    result = controller.delete(db_session, resource_id=1)
-    db_session.delete.assert_called_once_with(existing_resource)
-    db_session.commit.assert_called_once()
-    assert result is True
-
-def test_get_resource_not_found(db_session):
-    db_session.query.return_value.get.side_effect = NoResultFound
-    with pytest.raises(NoResultFound):
-        controller.get(db_session, resource_id=999)

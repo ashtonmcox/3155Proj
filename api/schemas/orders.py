@@ -17,7 +17,14 @@ class OrderBase(BaseModel):
 
 
 class OrderCreate(OrderBase):
-   total_price: float 
+   user_id: int
+   status: str
+   tracking_number: int
+   order_type: str
+   total_price: float
+   date: datetime 
+   class Config:
+        orm_mode = True
 
 
 class OrderUpdate(BaseModel):
@@ -27,6 +34,9 @@ class OrderUpdate(BaseModel):
    order_type: Optional[str] = None
    total_price: Optional[float] = None
    date: Optional[datetime] = None
+
+   class Config:
+        orm_mode = True
 
 
 

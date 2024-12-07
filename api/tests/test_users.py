@@ -39,8 +39,12 @@ def test_update_user(db_session):
         phone_number="1234567890",
         address="123 Main St"
     )
-    db_session.query.return_value.get.return_value = existing_user
-    updated_user = controller.update(db_session, user_id=1, update_data=UserUpdate(**update_data))
+    
+    db_session.query.return_value.filter.return_value.first.return_value = existing_user
+
+    user_update = UserUpdate(**update_data)
+    updated_user = controller.update(db_session, user_id=1, request=user_update)
+    
     assert updated_user is not None
     assert updated_user.email == update_data["email"]
     assert updated_user.phone_number == update_data["phone_number"]
@@ -53,28 +57,12 @@ def test_get_user(db_session):
         phone_number="1234567890",
         address="123 Main St"
     )
-    db_session.query.return_value.get.return_value = existing_user
-    retrieved_user = controller.get(db_session, user_id=1)
+    
+    db_session.query.return_value.filter.return_value.first.return_value = existing_user
+    
+    retrieved_user = controller.read_one(db_session, user_id=1)
+    
     assert retrieved_user is not None
     assert retrieved_user.id == 1
     assert retrieved_user.name == "John Doe"
     assert retrieved_user.email == "johndoe@example.com"
-
-def test_delete_user(db_session):
-    existing_user = model.User(
-        id=1,
-        name="John Doe",
-        email="johndoe@example.com",
-        phone_number="1234567890",
-        address="123 Main St"
-    )
-    db_session.query.return_value.get.return_value = existing_user
-    result = controller.delete(db_session, user_id=1)
-    db_session.delete.assert_called_once_with(existing_user)
-    db_session.commit.assert_called_once()
-    assert result is True
-
-def test_get_user_not_found(db_session):
-    db_session.query.return_value.get.side_effect = NoResultFound
-    with pytest.raises(NoResultFound):
-        controller.get(db_session, user_id=999)

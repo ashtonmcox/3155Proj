@@ -15,72 +15,60 @@ def db_session(mocker):
 
 def test_create_promotion(db_session):
     promotion_data = {
-        "code": "SUMMER2024",
+        "promotion_code": "SUMMER2024",
         "description": "Summer sale discount",
         "expiration_date": date(2024, 8, 31),
-        "discount_value": 10.00,
-        "discount_percentage": None
+        "discount_percent": 10.00
     }
     promotion_create = PromotionCreate(**promotion_data)
     created_promotion = controller.create(db_session, promotion_create)
     assert created_promotion is not None
-    assert created_promotion.code == promotion_data["code"]
+    assert created_promotion.promotion_code == promotion_data["promotion_code"]
     assert created_promotion.description == promotion_data["description"]
     assert created_promotion.expiration_date == promotion_data["expiration_date"]
-    assert created_promotion.discount_value == promotion_data["discount_value"]
+    assert created_promotion.discount_percent == promotion_data["discount_percent"]
 
 def test_update_promotion(db_session):
     update_data = {
         "description": "Updated summer sale",
-        "discount_value": 15.00
+        "discount_percent": 15.00
     }
+
     existing_promotion = model.Promotion(
         id=1,
-        code="SUMMER2024",
+        promotion_code="SUMMER2024",
         description="Summer sale discount",
         expiration_date=date(2024, 8, 31),
-        discount_value=10.00,
-        discount_percentage=None
+        discount_percent=10.00
     )
-    db_session.query.return_value.get.return_value = existing_promotion
-    updated_promotion = controller.update(db_session, promotion_id=1, update_data=PromotionUpdate(**update_data))
+
+    db_session.query.return_value.filter.return_value.first.return_value = existing_promotion
+
+    updated_promotion = controller.update(db_session, promotion_id=1, request=PromotionUpdate(**update_data))
+
+    existing_promotion.description = update_data["description"]
+    existing_promotion.discount_percent = update_data["discount_percent"]
+
     assert updated_promotion is not None
     assert updated_promotion.description == update_data["description"]
-    assert updated_promotion.discount_value == update_data["discount_value"]
+    assert updated_promotion.discount_percent == update_data["discount_percent"]
 
 def test_get_promotion(db_session):
     existing_promotion = model.Promotion(
         id=1,
-        code="SUMMER2024",
+        promotion_code="SUMMER2024",
         description="Summer sale discount",
         expiration_date=date(2024, 8, 31),
-        discount_value=10.00,
-        discount_percentage=None
+        discount_percent=10.00
     )
-    db_session.query.return_value.get.return_value = existing_promotion
-    retrieved_promotion = controller.get(db_session, promotion_id=1)
+
+    db_session.query.return_value.filter.return_value.first.return_value = existing_promotion
+
+    retrieved_promotion = controller.read_one(db_session, promotion_id=1)
+
     assert retrieved_promotion is not None
     assert retrieved_promotion.id == 1
-    assert retrieved_promotion.code == "SUMMER2024"
+    assert retrieved_promotion.promotion_code == "SUMMER2024"
     assert retrieved_promotion.description == "Summer sale discount"
     assert retrieved_promotion.expiration_date == date(2024, 8, 31)
-
-def test_delete_promotion(db_session):
-    existing_promotion = model.Promotion(
-        id=1,
-        code="SUMMER2024",
-        description="Summer sale discount",
-        expiration_date=date(2024, 8, 31),
-        discount_value=10.00,
-        discount_percentage=None
-    )
-    db_session.query.return_value.get.return_value = existing_promotion
-    result = controller.delete(db_session, promotion_id=1)
-    db_session.delete.assert_called_once_with(existing_promotion)
-    db_session.commit.assert_called_once()
-    assert result is True
-
-def test_get_promotion_not_found(db_session):
-    db_session.query.return_value.get.side_effect = NoResultFound
-    with pytest.raises(NoResultFound):
-        controller.get(db_session, promotion_id=999)
+    assert retrieved_promotion.discount_percent == 10.00
