@@ -11,7 +11,7 @@ class Order(Base):
 
 
    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-   user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)  
+   user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  
    status = Column(String(512), nullable=False)
    date = Column(DateTime, default=datetime.utcnow)
    tracking_number = Column(Integer, nullable=False)

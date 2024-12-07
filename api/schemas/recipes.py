@@ -7,6 +7,7 @@ class MenuItemRecipeBase(BaseModel):
     name: str
     price: float
     category: str
+    dietary_category: str
     description: str
     resource: str
     instructions: str
@@ -23,6 +24,7 @@ class MenuItemRecipeUpdate(BaseModel):
     name: Optional[str] = None
     price: Optional[float] = None
     category: Optional[str] = None
+    dietary_category: Optional[str] = None
     description: Optional[str] = None
     resource: Optional[str] = None
     instructions: Optional[str] = None

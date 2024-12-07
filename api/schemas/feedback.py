@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class FeedbackBase(BaseModel):
     user_id: int
     content: str
-    order_details_orders_id: int
+    order_id: int
     score: int  
 
 
@@ -16,7 +16,7 @@ class FeedbackCreate(FeedbackBase):
 class FeedbackUpdate(BaseModel):
     user_id: Optional[int] = None
     content: Optional[str] = None
-    order_details_orders_id: Optional[int] = None
+    order_id: Optional[int] = None
     score: Optional[int] = None
 
 

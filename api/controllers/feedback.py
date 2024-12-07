@@ -8,7 +8,7 @@ def create(db: Session, request):
     new_feedback = model.Feedback(
         user_id=request.user_id,
         content=request.content,
-        order_details_orders_id=request.order_details_orders_id,
+        order_id=request.order_id,
         score=request.score,
     )
 

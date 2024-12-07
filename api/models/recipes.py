@@ -11,6 +11,7 @@ class MenuItemRecipe(Base):
     name = Column(String(512), nullable=False)
     price = Column(Float, nullable=False)
     category = Column(String(512), nullable=True)
+    dietary_category = Column(String(512), nullable=True)
     description = Column(String(512), nullable=True)
     resource = Column(String(512), nullable=False)
     instructions = Column(String(512), nullable=False)

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from ..controllers import resources as controller
 from ..schemas import resources as schema
@@ -16,6 +16,7 @@ def create(request: schema.ResourceCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[schema.Resource])
 def read_all(db: Session = Depends(get_db)):
     return controller.read_all(db)
+
 
 @router.get("/{resource_id}", response_model=schema.Resource)
 def read_one(resource_id: int, db: Session = Depends(get_db)):

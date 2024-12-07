@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from ..controllers import recipes as controller
 from ..schemas import recipes as schema
@@ -16,6 +16,10 @@ def create(request: schema.MenuItemRecipeCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[schema.MenuItemRecipe])
 def read_all(db: Session = Depends(get_db)):
     return controller.read_all(db)
+
+@router.get("/{dietary_category}", response_model=list[schema.MenuItemRecipe])
+def read_by_dietary_category( dietary_category: str, db: Session = Depends(get_db)):
+    return controller.read_by_dietary_category(db=db, dietary_category=dietary_category)
 
 @router.get("/{item_id}", response_model=schema.MenuItemRecipe)
 def read_one(item_id: int, db: Session = Depends(get_db)):

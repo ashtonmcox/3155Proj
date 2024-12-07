@@ -9,6 +9,7 @@ def create(db: Session, request):
         name=request.name,
         price=request.price,
         category=request.category,
+        dietary_category=request.dietary_category,
         description=request.description,
         resource=request.resource,
         instructions=request.instructions,
@@ -34,6 +35,28 @@ def read_all(db: Session):
     except SQLAlchemyError as e:
         error = str(e.__dict__["orig"])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+    return result
+
+def read_by_dietary_category(db: Session, dietary_category: str):
+    try:
+        query = db.query(model.MenuItemRecipe)
+        
+        if dietary_category:
+            query = query.filter(
+                model.MenuItemRecipe.dietary_category.ilike(f"%{dietary_category}%")
+            )
+        
+        result = query.all()
+
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No menu items found for dietary category: {dietary_category}",
+            )
+    except SQLAlchemyError as e:
+        error = str(e.__dict__["orig"])
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+
     return result
 
 
