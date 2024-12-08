@@ -11,7 +11,6 @@ def create(db: Session, request: MenuItemRecipeCreate):
         category=request.category,
         dietary_category=request.dietary_category,
         description=request.description,
-        resource=request.resource,
         instructions=request.instructions,
         preparation_time=request.preparation_time,
         servings=request.servings,

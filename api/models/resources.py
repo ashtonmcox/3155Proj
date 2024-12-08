@@ -17,3 +17,4 @@ class Resource(Base):
         "MenuItemRecipe", secondary="menu_items_recipes_resources", back_populates="resources"
     )
 
+    used_in_recipes = relationship("RecipeIngredient", back_populates="resource")

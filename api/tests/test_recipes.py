@@ -18,7 +18,6 @@ def test_create_recipe(db_session):
         "category": "Pasta",
         "dietary_category": "Vegan",
         "description": "Classic Italian pasta dish",
-        "resource": "Pasta, eggs, cheese, pancetta",
         "instructions": "Cook pasta, mix with sauce, serve",
         "preparation_time": "30 min",
         "servings": 4,
@@ -35,7 +34,6 @@ def test_create_recipe(db_session):
     assert created_recipe.category == recipe_data["category"]
     assert created_recipe.dietary_category == recipe_data["dietary_category"]
     assert created_recipe.description == recipe_data["description"]
-    assert created_recipe.resource == recipe_data["resource"]
     assert created_recipe.instructions == recipe_data["instructions"]
     assert created_recipe.preparation_time == recipe_data["preparation_time"]
     assert created_recipe.servings == recipe_data["servings"]
@@ -55,7 +53,6 @@ def test_update_recipe(db_session):
         category="Pasta",
         dietary_category="Vegan",
         description="Classic Italian pasta dish",
-        resource="Pasta, eggs, cheese, pancetta",
         instructions="Cook pasta, mix with sauce, serve",
         preparation_time="30 min",
         servings=4,
@@ -90,7 +87,6 @@ def test_get_recipe(db_session):
         category="Pasta",
         dietary_category="Vegan",
         description="Classic Italian pasta dish",
-        resource="Pasta, eggs, cheese, pancetta",
         instructions="Cook pasta, mix with sauce, serve",
         preparation_time= "30 min",
         servings=4,
