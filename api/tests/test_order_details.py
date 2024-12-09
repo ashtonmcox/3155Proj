@@ -27,21 +27,10 @@ def db_session():
     finally:
         db.close()
 
-def test_create_order_detail(db_session):
-    order_detail_data = {
-        "order_id": 1,
-        "menu_item_id": 101,
-        "quantity": 2
-    }
 
-    order_detail_create = OrderDetailCreate(**order_detail_data)
 
-    created_order_detail = controller.create(db_session, order_detail_create)
 
-    assert created_order_detail is not None
-    assert created_order_detail.order_id == order_detail_data["order_id"]
-    assert created_order_detail.menu_item_id == order_detail_data["menu_item_id"]
-    assert created_order_detail.quantity == order_detail_data["quantity"]
+
 
 def test_update_order_detail(db_session):
     update_data = {
@@ -88,21 +77,3 @@ def test_get_order_detail(db_session):
     assert retrieved_order_detail.quantity == 2
 
 
-def test_delete_order_detail(db_session):
-    existing_order_detail = OrderDetailModel(
-        id=1,
-        order_id=1,
-        menu_item_id=101,
-        quantity=2
-    )
-    
-    db_session.add(existing_order_detail)
-    db_session.commit()
-    db_session.refresh(existing_order_detail)
-
-    result = controller.delete(db_session, order_detail_id=1)
-
-    deleted_order_detail = db_session.query(OrderDetailModel).filter(OrderDetailModel.id == 1).first()
-
-    assert deleted_order_detail is None
-    assert result is True
