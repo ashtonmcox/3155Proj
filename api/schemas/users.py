@@ -4,7 +4,7 @@ from pydantic import BaseModel, EmailStr
 
 class UserBase(BaseModel):
     name: str
-    email: EmailStr  
+    email: str
     phone_number: str
     address: str
 
@@ -15,7 +15,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     phone_number: Optional[str] = None
     address: Optional[str] = None
 
@@ -25,4 +25,5 @@ class User(UserBase):
     orders: Optional[list] = []  
 
     class Config:
-        from_attributes = True  
+        from_attributes = True
+        orm_mode = True
